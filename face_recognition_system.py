@@ -8,8 +8,15 @@ import argparse
 
 class FaceRecognitionSystem:
     def __init__(self, known_faces_dir: str = "known_faces"):
+        """
+        Initialize the Face Recognition System
+    
+        Args:
+            known_faces_dir: Directory containing known face images
+        """
+
         self.known_faces_dir = Path(known_faces_dir)
-        self.known_face_encoding = []
+        self.known_face_encodings = []
         self.known_face_names = []
         self.tolerance = 0.6    # Face recognition tolerance (lower = more strict)
 
@@ -18,9 +25,23 @@ class FaceRecognitionSystem:
 
         # Load known faces
         # self.load_known_faces()
-        pass
 
     def load_known_faces(self):
+        """Load and encode all known faces from the known_faces directory"""
+        print("Loading new faces...")
+
+        # Check if there are any saved encoding files
+        encodings_file = self.known_faces_dir / "face_encodings.pkl"
+        if encodings_file.exists():
+            try:
+                with open(encodings_file, 'rb') as f:
+                    data = pickle.load(f)
+                    self.known_face_encodings = data['encodings']
+                    self.known_face_names = data['names']
+                print(f"Loaded {len(set(self.known_face_names))} people from cache")
+                return
+            except:
+                print("Error loading cached encodings, rebuilding...")
         pass
 
     def save_encodings(self):
