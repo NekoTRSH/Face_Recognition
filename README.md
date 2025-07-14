@@ -3,6 +3,9 @@ A python program that will attempt to identify and/or verify a human face from a
 
 ## Installation
 1. **Clone or download this repositiory**
+   ```bash
+   git clone https://github.com/NekoTRSH/Face_Recognition.git
+   ```
    
 2. **Run the setup script**
    ```bash
