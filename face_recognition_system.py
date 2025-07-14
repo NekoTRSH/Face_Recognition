@@ -206,13 +206,52 @@ class FaceRecognitionSystem:
         Returns:
             List of dictionaries containing recognition results
         """
-
         try:
             # Load image, using face_recognition module
             image = face_recognition.load_image_file(image_path)
-        except:
-            return False
-        pass
+
+            # Find face location and encoding
+            face_locations = face_recognition.load_image_file(image_path)
+            face_encodings = face_recognition.face_encodings(image)
+
+            results = []
+
+            for face_encoding, face_location in zip(face_encodings, face_locations):
+                # Compare the image with the known faces
+                matches = face_recognition.compare_faces(
+                    self.known_face_encodings, 
+                    face_encoding,
+                    tolerance=self.tolerance
+                )
+
+                name = "Unknown"
+                confidence = 0.0
+
+                if True in matches:
+                    # Calculate face distances
+                    face_distances = face_recognition.face_distance(
+                        self.known_face_encodings,
+                        face_encoding
+                    )
+
+                    # Best match
+                    best_match_index = np.argmin(face_distances)
+
+                    if matches[best_match_index]:
+                        name = self.known_face_names[best_match_index]
+                        confidence = 1 - face_distances[best_match_index]
+                
+                results.append({
+                    'name': name,
+                    'confidence': confidence,
+                    'location': face_location
+                })
+            
+            return results
+
+        except Exception as e:
+            print(f"Error recognising face from image: {str(e)}")
+            return []
 
 def main():
     """
