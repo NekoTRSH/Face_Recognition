@@ -154,7 +154,44 @@ class FaceRecognitionSystem:
             bool: True if face was successfully added
         """
         try:
-            pass
+            # Load then encode the face
+            image = face_recognition.load_image_file(image_path)
+            face_encodings = face_recognition.face_encodings(image)
+
+            if not face_encodings:
+                print(f"No face found in {image_path}")
+                return False
+            
+            # Create folder if person doesn't exist (name doesn't match)
+            person_folder = self.known_faces_dir / name.replace(" ", "_").lower()
+            person_folder.mkdir(exist_ok=True)
+
+            # Copy image to person folder with unique name
+            image_path_obj = Path(image_path)
+            existing_files = list(person_folder.glob(f"{name.replace(' ', '_').lower()}_*{image_path_obj.suffix}"))
+            next_number = len(existing_files) + 1
+
+            new_filename = f"{name.replace(' ', '_').lower()}_{next_number}{image_path_obj.suffix}"
+            new_image_path = person_folder / new_filename
+
+            # Copy image file
+            import shutil
+            shutil.copy2(image_path, new_image_path)
+
+            # Add face encoding to current session
+            face_encoding = face_encodings[0]
+            self.known_face_encodings.append(face_encoding)
+            self.known_face_names.append(name)
+
+            # Clear cache encodings for rebuilding next session
+            encodings_file = self.known_faces_dir / "face_encodings.pkl"
+            if encodings_file.exists():
+                encodings_file.unlink()
+
+            print(f"Successfully added {name} (photo #{next_number}) to the system")
+            print(f"Image saved as: {new_image_path}")
+            return True
+
         except Exception as e:
             print(f"Error adding face: {str(e)}")
             return False
