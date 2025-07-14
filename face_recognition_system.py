@@ -27,7 +27,7 @@ class FaceRecognitionSystem:
         # self.load_known_faces()
 
     def load_known_faces(self):
-        """Load and encode all known faces from the known_faces directory"""
+        """ Load and encode all known faces from the known_faces directory """
         print("Loading new faces...")
 
         # Check if there are any saved encoding files
@@ -133,7 +133,18 @@ class FaceRecognitionSystem:
 
 
     def save_encodings(self):
-        pass
+        """ Save face encodings to file for faster loading """
+        encodings_file = self.known_faces_dir / "face_encodings.pkl"
+        data = {
+            'encodings': self.known_face_encodings,
+            'names': self.known_face_names
+        }
+
+        with open(encodings_file, 'wb') as f:
+            pickle.dump(data, f)
+        print("Face encodings saved to cache")
+
+
     def add_known_face(self, image_path: str, name: str) -> bool:
         pass
 
