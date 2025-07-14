@@ -14,7 +14,6 @@ class FaceRecognitionSystem:
         Args:
             known_faces_dir: Directory containing known face images
         """
-
         self.known_faces_dir = Path(known_faces_dir)
         self.known_face_encodings = []
         self.known_face_names = []
@@ -131,7 +130,6 @@ class FaceRecognitionSystem:
         if unique_people:
             print("Known people:", ", ".join(sorted(unique_people)))
 
-
     def save_encodings(self):
         """ Save face encodings to file for faster loading """
         encodings_file = self.known_faces_dir / "face_encodings.pkl"
@@ -144,9 +142,22 @@ class FaceRecognitionSystem:
             pickle.dump(data, f)
         print("Face encodings saved to cache")
 
-
     def add_known_face(self, image_path: str, name: str) -> bool:
-        pass
+        """
+        Add new new known face 
+
+        Args: 
+            image_path: Path to the image file
+            name: Name of the person
+
+        Returns:
+            bool: True if face was successfully added
+        """
+        try:
+            pass
+        except Exception as e:
+            print(f"Error adding face: {str(e)}")
+            return False
 
     def recognise_faces_in_image(self, image_path: str) -> List[Dict]:
         """
