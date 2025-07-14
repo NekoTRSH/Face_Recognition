@@ -1,0 +1,8 @@
+# Face recognition data 
+known_faces/
+*.pkl
+
+# Virtual environment
+venv/
+env/
+.env
