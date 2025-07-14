@@ -1,4 +1,4 @@
-import cv2
+# import cv2 # Potentially for video recognition
 import face_recognition
 import numpy as np
 import pickle
@@ -23,7 +23,7 @@ class FaceRecognitionSystem:
         self.known_faces_dir.mkdir(exist_ok=True)
 
         # Load known faces
-        # self.load_known_faces()
+        self.load_known_faces()
 
     def load_known_faces(self):
         """ Load and encode all known faces from the known_faces directory """
@@ -115,7 +115,7 @@ class FaceRecognitionSystem:
                 # Add individual encodings for better recognition
                 for i, encoding in enumerate(encodings_list):
                     self.known_face_encodings.append(encoding)
-                    self.known_face_names(person_name)
+                    self.known_face_names.append(person_name)
                 
                 print(f"Created {len(encodings_list) + 1} encodings for {person_name} (averaged + individual)")
 
@@ -211,8 +211,8 @@ class FaceRecognitionSystem:
             image = face_recognition.load_image_file(image_path)
 
             # Find face location and encoding
-            face_locations = face_recognition.load_image_file(image_path)
-            face_encodings = face_recognition.face_encodings(image)
+            face_locations = face_recognition.face_locations(image)
+            face_encodings = face_recognition.face_encodings(image, face_locations)
 
             results = []
 
@@ -254,10 +254,47 @@ class FaceRecognitionSystem:
             return []
 
 def main():
-    """
-    Main function to run rhe face recognition system
-    """
-    pass
+    """ Main function to run the face recognition system"""
+    # Add arguments when running
+    parser = argparse.ArgumentParser(description='Face recognition system')
+    parser.add_argument('--mode', choices=['image', 'add'], required=True, help='Recognition mode') # Only image for now
+    parser.add_argument('--input', help='Input file path (for image/video mode)')
+    parser.add_argument('--output', help='Output file path (for video mode)')
+    parser.add_argument('--name', help='Person name (for add mode)')
+    parser.add_argument('--tolerance', type=float, default=0.6, 
+                       help='Face recognition tolerance (default: 0.6)')
+    
+    args = parser.parse_args()
+
+    # Initialise face recognition system
+    face_system = FaceRecognitionSystem()
+    face_system.tolerance = args.tolerance
+
+    if args.mode == 'image':
+        if not args.input:
+            print("Error: --input required for image mode")
+            return
+        
+        print(f"Recognising faces in image: {args.input}")
+        results = face_system.recognise_faces_in_image(args.input)
+
+        if results:
+            print("\nRecognition Results:")
+            for i, result in enumerate(results, 1):
+                print(f"Face {i}: {result['name']} (Confidence: {result['confidence']:.2f})")
+        else:
+            print("No faces found in the image")
+
+    elif args.mode == 'add':
+        if not args.input or not args.name:
+            print("Error: --input and --name required for add mode")
+            return
+        
+        success = face_system.add_known_face(args.input, args.name)
+        if success:
+            print(f"Successfully added {args.name} to system")
+        else:
+            print(f"Failed to add {args.name} to system")
 
 if __name__ == "__main__":
     main()
