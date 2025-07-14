@@ -15,7 +15,16 @@ A python program that will attempt to identify and/or verify a human face from a
    - Install all required dependencies
      
 3. **Start using the program**
+   - Add known faces to system
    ```bash
-   ./
+   python face_recognition_system.py --mode add --input path/to/image.jpg --name "John Doe"
    ```
+   - Recognise faces from images
+   ```bash
+   python face_recognition_system.py --mode image --input path/to/image.jpg
+
+   # With custom tolerance (lower = more strict)
+   python face_recognition_system.py --mode image --input path/to/image.jpg --tolerance 0.5
+   ```
+
    
