@@ -1,6 +1,7 @@
 """ A graphical user interface for the program """
 
 import tkinter as tk
+from tkinter import ttk, messagebox
 from face_recognition_system import FaceRecognitionSystem
 
 class FaceRecognitionGUI:
@@ -16,6 +17,8 @@ class FaceRecognitionGUI:
         self.setup_ui()
 
     def setup_ui(self):
+        notebook = ttk.Notebook(self.root)
+        notebook.pack(fill="both", expand=True, padx=10, pady=10)
         pass
 
     pass
