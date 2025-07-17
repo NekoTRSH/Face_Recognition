@@ -6,3 +6,7 @@ known_faces/
 venv/
 env/
 .env
+
+# Python
+.DS_Store
+__pycache__/
